@@ -1,0 +1,36 @@
+---
+- block:
+
+  - name: 'rust : checkout rustup repository'
+    git:
+      repo: https://github.com/rust-lang/rustup.git
+      dest: /home/{{ user_name }}/rustup
+  
+  - name: 'rust : execute rust-init.sh -y'
+    become: yes
+    become_user: "{{ user_name }}"
+    command: sh ./rustup-init.sh -y
+    args:
+      chdir: /home/{{ user_name }}/rustup
+  
+  - name: 'rust : add bin directory for cargo'
+    become: yes
+    become_user: "{{ user_name }}"
+    shell: /bin/bash -ic 'source $HOME/.cargo/env'
+ 
+  - name: 'rust : source profile for rust'
+    become: yes
+    become_user: "{{ user_name }}"
+    shell: /bin/bash -ic 'source ~/.profile'
+  
+  - name: 'rust : install build-essential for rust'
+    apt:
+     update_cache: yes
+     name: build-essential
+
+  tags:
+    - common
+    - rust 
+ 
+
+  

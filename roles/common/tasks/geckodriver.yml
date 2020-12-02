@@ -1,0 +1,13 @@
+---
+- block:
+
+  - name: 'common : download and extract gecko driver'
+    become: yes  
+    unarchive:
+      src: https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
+      dest: /usr/local/bin
+      remote_src: yes
+
+  tags:
+    - common
+    - geckodriver

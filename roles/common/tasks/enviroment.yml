@@ -1,0 +1,23 @@
+---
+- block:
+
+  - name: 'enviroment: add snap path to etc/enviroment'
+    become: yes 
+    lineinfile:
+      dest: /etc/environment
+      regexp: '^PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"'
+      line: 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"'
+
+  - name: 'snap : reboot machine to make changes to /etc/enviroment permanent'
+    reboot:
+      reboot_timeout: 300
+      
+  - name: 'snap: Check the uptime after reboot'
+    shell: uptime
+    register: UPTIME_POST_REBOOT
+ 
+  - debug: msg={{UPTIME_POST_REBOOT.stdout}}
+
+  tags:
+    - common
+    - enviroment

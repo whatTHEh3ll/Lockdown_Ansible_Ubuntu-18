@@ -1,0 +1,16 @@
+---
+- block:
+
+  - name: 'chromedriver : download latest chromedriver'
+    get_url:
+      url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      dest: /home/{{ user_name }}
+
+  - name: 'chromedriver : Install google-chrome-stable_current_amd64.deb package'
+    apt:
+      deb: /home/{{ user_name }}/google-chrome-stable_current_amd64.deb
+
+  tags:
+    - common
+    - chromedriver
+   
