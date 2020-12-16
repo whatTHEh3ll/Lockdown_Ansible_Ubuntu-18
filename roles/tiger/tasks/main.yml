@@ -1,12 +1,14 @@
 ---
 
 - name: Install tiger
+  become: yes
   apt:
     name: tiger
     state: present
   tags: tiger 
 
 - name: Install cpulimit for tiger 
+  become: yes
   apt:
     name: cpulimit
     state: present

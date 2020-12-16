@@ -1,15 +1,17 @@
 ---
 
 - name: Update apt-get repo and cache
+  become: yes
   apt:
     update_cache: yes
  
 - name: Update all packages to the latest version
+  become: yes
   apt:
     upgrade: dist 
  
 - name: install additional packages
-  become: true
+  become: yes
   apt:
     name: 
       - vim
@@ -36,6 +38,8 @@
       - apt-transport-https
       - gnupg-agent
       - ca-certificates 
+      - pwgen
+      - secure-delete
     state: present
     update_cache: true
   

@@ -20,6 +20,7 @@
       state: present
 
   - name: 'anonymity : Install Tor packages'
+    become: yes 
     apt:
       update_cache: yes
       name: "{{ tor_packages }}"
@@ -27,6 +28,22 @@
       tor_packages:
         - tor
         - deb.torproject.org-keyring
+
+  - name: 'anonymity : Install additional packages for Tor'
+    become: yes 
+    apt:
+      name:
+        - obfs4proxy
+        - proxychains4 
+
+  - name: 'anonymity : copy torrc into /etc/tor/'
+    become: yes
+    copy:
+      src: ../../../../../../Ansible-Config/torrc
+      dest: /etc/tor/
+      decrypt: yes
+      owner: root
+      group: root
   
   - name: 'anonymity : Restart Tor'
     systemd:

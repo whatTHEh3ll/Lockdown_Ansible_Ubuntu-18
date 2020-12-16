@@ -21,3 +21,9 @@
     dest: /home/{{ user_name }}/.config/rclone/
     force: yes 
     decrypt: yes
+
+- name: 'rclone : cleanup fragments'
+  become: yes
+  file:
+    dest: /home/{{ user_name }}/install.sh
+    state: absent

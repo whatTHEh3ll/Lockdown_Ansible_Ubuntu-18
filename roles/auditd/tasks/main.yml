@@ -1,23 +1,72 @@
 ---
 
 - name: Install auditd
+  become: yes 
   apt:
     name: auditd
     state: present
+
+- name: copy audit.rules to /etc/audit/
+  become: yes
+  copy:
+    src: templates/audit.rules.j2
+    dest: /etc/audit/audit.rules 
+    force: yes 
+    owner: root
+    group: root
+    mode: 0644
   
 - name: "start auditd"
+  become: yes
   systemd:
+    state: restarted
+    daemon_reload: yes
     name: auditd
-    state: started
- 
+    
 - name: enable service auditd and ensure it is not masked
+  become: yes
   systemd:
     name: auditd
     enabled: yes
     masked: no
+
+- name: list auditd rules and write to file 
+  become: yes
+  shell: auditctl -l > auditd-rules-{{ ansible_date_time.date }}.txt 
+  register: auditctl
+  args: 
+    chdir: /home/{{ user_name }}/
  
 - name: run aditd for for first time
   become: yes
   shell: aureport > auditd-first-run-{{ ansible_date_time.date }}.txt 
   args: 
     chdir: /home/{{ user_name }}/
+
+- name: change file permisions for  auditd-first-run-{{ ansible_date_time.date }}.txt and auditd-rules-{{ ansible_date_time.date }}.txt 
+  file:
+    path: "{{ item }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: '0755'
+  with_items:
+    - /home/{{ user_name }}/auditd-first-run-{{ ansible_date_time.date }}.txt 
+    - /home/{{ user_name }}/auditd-rules-{{ ansible_date_time.date }}.txt 
+
+- name: copy auditd rules to playbook directory
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ playbook_dir }}"
+  with_items:
+    - auditd-first-run-{{ ansible_date_time.date }}.txt 
+    - auditd-rules-{{ ansible_date_time.date }}.txt 
+
+- name: delete auditd-first-run-{{ ansible_date_time.date }}.txt and auditd-rules-{{ ansible_date_time.date }}.txt 
+  shell: "{{ item }}"
+  args:
+    chdir: /home/{{ user_name }}
+  with_items:
+    - srm -vz auditd-first-run-{{ ansible_date_time.date }}.txt
+    - srm -vz auditd-rules-{{ ansible_date_time.date }}.txt 
+    
+  

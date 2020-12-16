@@ -3,10 +3,10 @@
 - include: golang.yml tags=common,golang
 - include: ruby.yml tags=common,ruby
 - include: node.yml tags=common,node,
-- include: docker.yml tags=common,docker
+#- include: docker.yml tags=common,docker
 - include: chromedriver.yml tags=commom,chromedriver 
 - include: geckodriver.yml tags=commom,geckodriver 
-- include: enviroment.yml tags=commom,enviroment
+- include: snap.yml tags=commom,snap
 - include: monolith.yml tags=common,monolith
 - include: rust.yml tags=common,rust 
 

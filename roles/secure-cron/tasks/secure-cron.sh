@@ -13,10 +13,6 @@ sed -i 's/#47/# 47/' /etc/crontab
 
 sed -i 's/#52/# 52/' /etc/crontab 
 
-#### Allow current user to run cronjobs
-touch /etc/cron.allow
-
-echo -e "${USER}" | sudo tee -a /etc/cron.allow
-
 # disable at
 apt-get purge at -y
+

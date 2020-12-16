@@ -1,6 +1,7 @@
 ---
 
 - name: Copy linushealthcheck script to /usr/local/bin
+  become: yes
   copy:
     src: health.sh
     dest: /usr/local/bin
@@ -10,6 +11,7 @@
   tags: scripts
 
 - name: Copy security script to /home/{{ user_name }}
+  become: yes
   copy:
     src: security.sh
     dest: /home/{{ user_name }}

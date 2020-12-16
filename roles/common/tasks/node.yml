@@ -10,6 +10,7 @@
     shell: bash /home/{{ user_name }}/node_setup.sh
 
   - name: 'node : install Node'
+    become: yes
     apt:
       name: nodejs
       state: present
@@ -28,6 +29,7 @@
       update_cache: yes
 
   - name: 'node : install Yarn'
+    become: yes
     apt:
       name: yarn
       state: present

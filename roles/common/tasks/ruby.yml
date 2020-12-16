@@ -8,14 +8,28 @@
       update_cache: yes
 
   - name: 'ruby : install rvm'
+    become: yes 
     apt:
       name: rvm
       state: present
 
-  - name: 'ruby : install default ruby'
-    shell: '/bin/bash -lc "rvm install ruby"'
+  - name: 'ruby : install ruby 2.7.0'
+    shell: '/bin/bash -lc "rvm install ruby-2.7.0"'
     register: shell_output
   - debug: msg={{ shell_output.stdout }}
+
+  - name: 'default to ruby 2.7.0'
+    shell: '/bin/bash -lc "rvm --default use ruby-2.7.0"'
+    register: shell_output
+  - debug: msg={{ shell_output.stdout }}
+
+  - name: add ruby to /etc/enviroment
+    lineinfile:  
+      path: /etc/environment
+      state: present
+      backrefs: yes
+      regexp: 'PATH=(["]*)((?!.*?/usr/share/rvm/rubies/ruby-2.7.0/bin/ruby).*?)(["]*)$'
+      line: 'PATH=\1\2:/usr/share/rvm/rubies/ruby-2.7.0/bin/ruby\3'
 
   tags:
     - common

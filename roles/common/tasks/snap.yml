@@ -1,0 +1,15 @@
+---
+- block:
+
+  - name: 'snap: add snap path to etc/enviroment'
+    become: yes 
+    lineinfile:
+      path: /etc/environment
+      state: present
+      backrefs: yes
+      regexp: 'PATH=(["]*)((?!.*?/snap/bin).*?)(["]*)$'
+      line: 'PATH=\1\2:/snap/bin\3'
+
+  tags:
+    - common
+    - snap

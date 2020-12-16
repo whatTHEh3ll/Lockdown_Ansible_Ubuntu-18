@@ -2,6 +2,7 @@
 - block:
 
   - name: 'dnscrypt : purge original dnscrypt package package'
+    become: yes
     apt:
       name: dnscrypt-proxy
       state: absent
@@ -12,6 +13,7 @@
       repo: ppa:shevchuk/dnscrypt-proxy
 
   - name: 'dnscrypt : update cache and install dnscrypt'
+    become: yes
     apt:
       name: dnscrypt-proxy
       update_cache: yes

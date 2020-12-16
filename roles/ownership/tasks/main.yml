@@ -1,6 +1,34 @@
 ---
 
-- name: Recursively change ownership of a directory
+- name:  Verify Permissions on /etc/passwd, /etc/shadow, /etc/group
+  become: yes
+  shell: "{{ item }}"
+  args:
+    chdir: /home/{{ user_name }}
+    warn: no
+  with_items:
+    - sudo chmod 644 /etc/passwd
+    - sudo chmod o-rwx,g-rw /etc/shadow
+    - sudo chmod 644 /etc/group
+
+- name: change ownership on /etc/passwd and /etc/group
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+  with_items:
+    - "/etc/passwd"
+    - "/etc/group"
+
+- name: change ownership on /etc/shadow
+  become: yes
+  file:
+    path: /etc/shadow
+    owner: root
+    group: shadow
+
+- name: Recursively change ownership of /home/{{ user_name }} directory
   become: yes 
   file:
     path: /home/{{ user_name }}

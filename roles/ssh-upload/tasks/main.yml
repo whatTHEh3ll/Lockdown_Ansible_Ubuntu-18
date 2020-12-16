@@ -1,10 +1,11 @@
 ---
+  
 - name: add second ssh key for mobile access
   authorized_key:
     user: "{{ user_name }}"
     state: present
     manage_dir: yes
-    key: "{{ lookup('file', 'id_rsa.pub') }}"
+    key: "{{ lookup('file', '../../../../../../Ansible-Config/id_rsa.pub') }}"
     
     
  

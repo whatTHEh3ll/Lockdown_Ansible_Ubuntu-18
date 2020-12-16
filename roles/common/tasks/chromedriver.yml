@@ -7,6 +7,7 @@
       dest: /home/{{ user_name }}
 
   - name: 'chromedriver : Install google-chrome-stable_current_amd64.deb package'
+    become: yes 
     apt:
       deb: /home/{{ user_name }}/google-chrome-stable_current_amd64.deb
 

@@ -9,16 +9,26 @@
   - name: 'covermyass : install dependancies for covermyass'
     become: yes
     become_user: "{{ user_name }}"
-    shell: /home/{{ user_name | quote }}/.go/bin/go get -v -t -d ./...
+    shell: /usr/local/go/bin/go get -v -t -d ./...
     args:
       chdir: /home/{{ user_name }}/go-covermyass
 
   - name: 'covermyass : build covermyass'
     become: yes
-    shell: /home/{{ user_name | quote }}/.go/bin/go build -v .
+    shell: /usr/local/go/bin/go build -v .
     args:
       chdir: /home/{{ user_name }}/go-covermyass
 
+  - name: 'covermyass : make go-covermyass executable'
+    become: yes 
+    copy:
+      src: /home/{{ user_name }}/go-covermyass/go-covermyass
+      dest: /usr/local/bin/
+      owner: "{{ user_name }}"
+      group: "{{ user_name }}"
+      mode: '0755'
+      remote_src: true
+
   tags:
     - anonymity
-    - hidemyass
+    - covermyass
