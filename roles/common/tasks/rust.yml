@@ -2,6 +2,7 @@
 - block:
 
   - name: 'rust : checkout rustup repository'
+    become: yes 
     git:
       repo: https://github.com/rust-lang/rustup.git
       dest: /home/{{ user_name }}/rustup
@@ -24,6 +25,7 @@
     shell: /bin/bash -ic 'source ~/.profile'
   
   - name: 'rust : install build-essential for rust'
+    become: yes
     apt:
      update_cache: yes
      name: build-essential

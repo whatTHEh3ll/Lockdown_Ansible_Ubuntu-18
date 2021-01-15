@@ -1,11 +1,13 @@
 ---
 
 - name: Install the ufw package
+  become: yes
   package:
     name: ufw
     state: latest
   
 - name: Install the iptables-persistent package 
+  become: yes
   package:
     name: iptables-persistent
     state: latest
@@ -35,7 +37,7 @@
   
 - name: reload ufw with shell module
   become: yes
-  shell: ufw reload 
+  shell: ufw reload
     
 
 

@@ -2,18 +2,22 @@
 - block:
 
   - name: 'golang : download golang 1.15.5 archive'
+    become: yes
+    become_user: "{{ user_name }}"
     get_url:
       url: https://golang.org/dl/go1.15.5.linux-amd64.tar.gz
       dest: /home/{{ user_name }}/golang.tar.gz
       checksum: sha256:9a58494e8da722c3aef248c9227b0e9c528c7318309827780f16220998180a0d
 
   - name: 'golang : extract archive'
+    become: yes
     unarchive:
       dest: /usr/local
       remote_src: yes
       src: /home/{{ user_name }}/golang.tar.gz
 
   - name: add /usr/local/go/bin to path
+    become: yes
     lineinfile: 
       path: /etc/environment
       state: present
@@ -22,6 +26,8 @@
       line: 'PATH=\1\2:/usr/local/go/bin\3'
 
   - name: 'golang : cleanup fragments'
+    become: yes
+    become_user: "{{ user_name }}"
     file:
       dest: /home/{{ user_name }}/golang.tar.gz
       state: absent

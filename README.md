@@ -16,7 +16,7 @@
 
 - [ ] run bleachbit as cron job (maybe) or bleach certain parts of ubuntu with an Ansible task (automatic)
 
-- [ ] make sure all developmet laguages in common role are ready to use out of the box (no sourcing .bashrc or .profile)
+- [ ] make sure all developmet languages in common role are ready to use out of the box (no sourcing .bashrc or .profile)
 
 
 useful commands....

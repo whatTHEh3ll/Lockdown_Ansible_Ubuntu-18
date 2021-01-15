@@ -2,6 +2,7 @@
 - block:
 
   - name: 'ruby : add rvm repository'
+    become: yes
     apt_repository:
       repo: 'ppa:rael-gc/rvm'
       state: present
@@ -14,16 +15,19 @@
       state: present
 
   - name: 'ruby : install ruby 2.7.0'
+    become: yes
     shell: '/bin/bash -lc "rvm install ruby-2.7.0"'
     register: shell_output
   - debug: msg={{ shell_output.stdout }}
 
   - name: 'default to ruby 2.7.0'
+    become: yes
     shell: '/bin/bash -lc "rvm --default use ruby-2.7.0"'
     register: shell_output
   - debug: msg={{ shell_output.stdout }}
 
   - name: add ruby to /etc/enviroment
+    become: yes 
     lineinfile:  
       path: /etc/environment
       state: present

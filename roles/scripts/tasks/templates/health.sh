@@ -1,4 +1,4 @@
-#!/bin/bash 
+#! /usr/bin/env bash
 EMAIL=''
 function sysstat {
 echo -e "

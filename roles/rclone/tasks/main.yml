@@ -1,6 +1,7 @@
 ---
 
 - name: download rclone install script
+  become: yes
   get_url:
     url: https://rclone.org/install.sh
     dest: /home/{{ user_name }}
@@ -16,6 +17,7 @@
     msg: "{{ rcloneinstall.stdout }}"
 
 - name: copy rclone.conf file to /home/{{  user_name }}/.config/rclone/rclone.conf
+  become: yes # requires root
   copy:
     src: ../../../../../../Ansible-Config/rclone.conf
     dest: /home/{{ user_name }}/.config/rclone/

@@ -8,6 +8,14 @@
       dest: /usr/local/bin
       remote_src: yes
 
+  - name: 'common : make gecko driver executable'
+    become: true
+    file:
+      path: /usr/local/bin/geckodriver
+      owner: "{{ user_name }}"
+      group: "{{ user_name }}"
+      mode: '0755'
+
   tags:
     - common
     - geckodriver

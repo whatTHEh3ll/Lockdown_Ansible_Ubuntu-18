@@ -9,6 +9,7 @@
       purge: yes 
 
   - name: 'dnscrypt : add dnscrypt repo'
+    become: yes  
     apt_repository:
       repo: ppa:shevchuk/dnscrypt-proxy
 
@@ -30,6 +31,7 @@
     shell: ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
     
   - name: 'dnscrypt : reboot machine to make changes to /etc/resolv.conf'
+    become: yes
     reboot:
       reboot_timeout: 300
       
@@ -40,6 +42,7 @@
   - debug: msg={{UPTIME_POST_REBOOT.stdout}}
 
   - name: 'dnscrypt : install reslovconf to make /etc/reslov.conf permanent'
+    become: yes
     apt:
       name: resolvconf
       update_cache: yes
@@ -70,6 +73,7 @@
       name: resolvconf.service
 
   - name: 'dnscrypt : reboot machine to make changes to /etc/resolvconf/resolv.conf.d/head'
+    become: yes 
     reboot:
       reboot_timeout: 300
       
@@ -94,6 +98,7 @@
       force: yes
 
   - name: 'dnscrypt : restart dnscrypt-proxy'
+    become: yes
     systemd:
       state: restarted
       name: dnscrypt-proxy 

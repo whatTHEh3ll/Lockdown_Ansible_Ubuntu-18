@@ -8,11 +8,15 @@
       name: openvpn
 
   - name: 'openvpn : clone dnsleaktest repository'
+    become: yes
+    become_user: "{{ user_name }}"
     git:
       repo:  https://github.com/macvk/dnsleaktest.git
       dest: /home/{{ user_name }}/dnsleaktest
 
   - name: 'openvpn : make dnsleak script executable' 
+    become: yes
+    become_user: "{{ user_name }}"
     file:
       path: /home/{{ user_name }}/dnsleaktest
       owner: "{{ user_name }}"
@@ -20,6 +24,8 @@
       mode: '0755'
  
   - name: 'openvpn : Install speedtest-cli with pip3'
+    become: yes
+    become_user: "{{ user_name }}"
     pip:
       name: speedtest-cli
       executable: pip3

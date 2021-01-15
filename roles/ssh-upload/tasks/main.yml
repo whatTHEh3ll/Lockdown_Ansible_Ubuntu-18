@@ -1,6 +1,7 @@
 ---
   
 - name: add second ssh key for mobile access
+  become: yes
   authorized_key:
     user: "{{ user_name }}"
     state: present

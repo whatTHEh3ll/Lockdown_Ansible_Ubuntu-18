@@ -104,10 +104,14 @@
    - role: ownership
      tags:
      - ownership
- # roles that already have tags
-   - common
-   - anonymity
- # end of roles with tags
+
+   - role: common
+     tags:
+     - common
+
+   - role: anonymity
+     tags:
+     - anonymity
 
    - role: rclone
      tags:

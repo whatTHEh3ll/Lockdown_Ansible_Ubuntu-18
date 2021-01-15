@@ -2,6 +2,7 @@
 - block:
 
   - name: 'covermyass : download covermyass'
+    become: yes 
     git:
       repo: https://github.com/sundowndev/go-covermyass
       dest: /home/{{ user_name }}/go-covermyass

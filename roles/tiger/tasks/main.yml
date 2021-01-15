@@ -19,6 +19,27 @@
   args:
     chdir: /home/{{ user_name }}
     warn: no
+
+- name: change file permisions for tiger-{{ ansible_date_time.date }}.txt
+  become: yes 
+  file:
+    path: "/home/{{ user_name }}/tiger-{{ ansible_date_time.date }}.txt"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: copy tiger-{{ ansible_date_time.date }}.txt to playbook directory
+  become: yes
+  become_user: "{{ user_name }}"
+  fetch:
+    src:  "/home/{{ user_name }}/tiger-{{ ansible_date_time.date }}.txt"
+    dest: "{{ playbook_dir }}"
+
+- name: delete tiger-{{ ansible_date_time.date }}.txt
+  become: yes
+  become_user: "{{ user_name }}"
+  shell: "srm -vz tiger-{{ ansible_date_time.date }}.txt"
+  args:
+    chdir: /home/{{ user_name }}/
   
 
 

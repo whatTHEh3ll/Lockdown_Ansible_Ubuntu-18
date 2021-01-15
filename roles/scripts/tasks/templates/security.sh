@@ -1,7 +1,5 @@
-#!/bin/bash
-# timedatectl set-timezone 'America/Los_Angeles'
-# Backup mysql/mariadb database
- 
+#! /usr/bin/env bash
+
 ## Get current date ##
 _now=$(date +"%m_%d_%Y_%r")
  
@@ -24,9 +22,6 @@ echo . >> "$_file"
 echo "#### CHECK FOR DDOS ####" >> "$_file"
 echo . >> "$_file"
 netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n >> "$_file"
-echo . >> "$_file"
-echo "### LOGWATCH RESULTS ###" >> "$_file"
-logwatch | less
 echo . >> "$_file"
 echo "### RUN AUDITD ###" >> "$_file"
 aureport >> "$_file"

@@ -7,7 +7,7 @@
     state: latest
 
 - name: Override some basic fail2ban configurations
-  become: yes 
+  become: yes
   copy:
     src: ../templates/jail.local.j2
     dest: /etc/fail2ban/jail.local
@@ -16,15 +16,17 @@
     mode: 0644
  
 - name: Restart fail2ban
+  become: yes 
   systemd:
     state: restarted
     daemon_reload: yes
     name: fail2ban
- 
+  tags: fail2ban 
+
 - name: 'enable fail2ban as a service'
   become: yes 
   systemd:
     name: fail2ban
     enabled: yes 
-
+  
  

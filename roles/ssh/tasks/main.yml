@@ -1,12 +1,13 @@
 ---
 - name: Add local public key for key-based SSH authentication
+  become: yes
   authorized_key:
     user: "{{ user_name }}"
     state: present
     key: "{{ lookup('file', public_key) }}"
-  tags: ssh 
-
+ 
 - name: Harden sshd configuration
+  become: yes
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
@@ -55,9 +56,9 @@
       line: "PermitUserEnvironment no"
     - regexp: "^#?PermitEmptyPasswords"
       line: "PermitEmptyPasswords no"
-  tags: ssh
 
 - name: add lines to ssh configuration
+  become: yes
   blockinfile:
     dest: /etc/ssh/sshd_config
     state: present
@@ -67,9 +68,9 @@
       RhostsRSAAuthentication no
       RSAAuthentication yes
       Protocol 2
-  tags: ssh  
 
 - name: Harden pamd./sshd   
+  become: yes
   lineinfile:
     dest: /etc/pam.d/sshd
     regexp: "{{ item.regexp }}"
@@ -80,16 +81,23 @@
       line: "#session    optional     pam_motd.so  motd=/run/motd.dynamic"
     - regexp: "^session    optional     pam_motd.so noupdate?"
       line: "#session    optional     pam_motd.so noupdate"
-  tags: ssh 
 
-- name: assig new port to ssh
+- name: Disable SSH short modulis for DH
+  become: yes
+  shell: |-
+    awk '$5 >= 3071' /etc/ssh/moduli > /tmp/moduli &&
+    mv /tmp/moduli /etc/ssh/moduli
+ 
+- name: assign new port to ssh
+  become: yes
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^#Port'
     line: 'Port 2277'
-  tags: ssh 
+  
 
 - name: Restart sshd
+  become: yes 
   systemd:
     state: restarted
     daemon_reload: yes

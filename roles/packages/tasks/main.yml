@@ -6,12 +6,12 @@
     update_cache: yes
  
 - name: Update all packages to the latest version
-  become: yes
+  become: yes 
   apt:
     upgrade: dist 
  
 - name: install additional packages
-  become: yes
+  become: true
   apt:
     name: 
       - vim

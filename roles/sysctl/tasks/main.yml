@@ -5,6 +5,7 @@
     file: sysctl_config.yml
   
 - name: Change various sysctl-settings
+  become: yes 
   sysctl:
     name: '{{ item.key }}'
     value: '{{ item.value }}'

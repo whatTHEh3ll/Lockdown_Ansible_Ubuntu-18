@@ -2,16 +2,22 @@
 - block:
 
   - name: 'anonymity : download noisy repository'
+    become: yes
+    become_user: "{{ user_name }}"
     git:
       repo: https://github.com/1tayH/noisy.git
       dest: /home/{{ user_name }}/noisy
-  
+
   - name: 'anonymity : Install requests library'
+    become: yes
+    become_user: "{{ user_name }}"
     pip:
       name: requests
       executable: pip3
   
   - name: 'anonymity : copy custom config to nosiy directory'
+    become: yes
+    become_user: "{{ user_name }}"
     copy:
       src: config.json
       dest: /home/{{ user_name }}/noisy

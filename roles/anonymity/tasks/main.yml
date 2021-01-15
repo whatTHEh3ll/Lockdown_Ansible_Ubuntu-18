@@ -4,3 +4,4 @@
 - include: vpn.yml tags=anonymity,vpn  
 - include: covermyass.yml tags=anonymity,covermyass
 - include: dnscrypt.yml tags=anonymity,dnscrypt
+- include: bleachbit.yml tags=anonymity,bleachbit
