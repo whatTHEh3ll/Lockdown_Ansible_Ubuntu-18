@@ -16,9 +16,9 @@
   remote_user: root 
   #become: yes
  
-
   vars:
     user_name: user 
+    ssh_port: 2277
    # RUN THIS COMMAND TO GET STARTED....
    # "mkpasswd --method=sha-512"
    # Check the README for information about creating a hashed password
@@ -43,7 +43,19 @@
 
    - role: user
      tags:
-     - user 
+     - user  
+
+   - role: ssh-port
+     tags:
+     - ssh-port
+
+   - role: ssh-config
+     tags:
+     - ssh-config
+
+   - role: fail2ban
+     tags:
+     - fail2ban 
 
    - role: sudo
      tags:
@@ -113,10 +125,6 @@
      tags:
      - anonymity
 
-   - role: rclone
-     tags:
-     - rclone 
-
    - role: firewall
      tags:
      - firewall 
@@ -125,14 +133,9 @@
      tags:
      - sysctl 
 
-   - role: fail2ban
-     tags:
-      fail2ban 
+ 
    
-   - role: ssh
-     tags:
-     - ssh 
-
+   
 
       
 

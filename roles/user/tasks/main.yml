@@ -20,15 +20,22 @@
     name: sudo
     state: latest
 
+- name: Include pass_vault variable
+  include_vars: 
+    file: pass_vault.yml
+
 - name: Create the non-root user account
   become: yes
   user:
     name: "{{ user_name }}"
-    password: "{{ 'wh@dd@th3h311' | password_hash('sha512') }}"
+    password: "{{ my_password | password_hash('sha512') }}"
     shell: /bin/bash
     update_password: on_create
     groups: wheel
     append: yes
+   
+
+
 
 
   

@@ -8,7 +8,7 @@
 
 - name: Override some basic fail2ban configurations
   become: yes
-  copy:
+  template:
     src: ../templates/jail.local.j2
     dest: /etc/fail2ban/jail.local
     owner: root
