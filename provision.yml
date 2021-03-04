@@ -3,6 +3,7 @@
 
   # Specify the hosts you want to target
   hosts: all
+  ignore_errors: yes
   gather_facts: True
   no_log: False
  
@@ -14,7 +15,7 @@
   # `--ask-become-pass` flag, like so:
   # `ansible-playbook -k provision.yml --ask-become-pass`.
   remote_user: root 
-  #become: yes
+  become: yes
  
   vars:
     user_name: user 
@@ -23,93 +24,122 @@
    # "mkpasswd --method=sha-512"
    # Check the README for information about creating a hashed password
     public_key: ~/.ssh/id_ed25519.pub 
+
+  pre_tasks:
     
+    - raw: sudo apt-get update -y
+      register: system_output
+
+    - raw: sudo apt-get -y install python3
+      register: py_3_output
+
+    - debug: 
+        var=system_output.stdout_lines
+
+    - debug: 
+        var=py_3_output.stdout_lines
+
+    - name: get Python version
+      shell: python3 --version 2>&1
+      register: py_3_output
+
+    - debug: 
+        var=py_3_output.stdout_lines
+
   roles:
+
    - role: packages
+     become: yes
      tags:
      - packages
 
    - role: locale
+     become: yes
      tags:
      - locale 
 
-   - role: timectl
-     tags:
-     - packages
-
    - role: unattended-upgrades
+     become: yes 
      tags:
      - unattended
 
    - role: user
+     become: yes 
      tags:
      - user  
 
-   - role: ssh-port
+   - role: directory
+     become: yes
      tags:
-     - ssh-port
+     - directory
 
-   - role: ssh-config
+   - role: timedatectl
+     become: yes
      tags:
-     - ssh-config
-
-   - role: fail2ban
-     tags:
-     - fail2ban 
+     - timectl
 
    - role: sudo
+     become: yes
      tags:
      - sudo 
     
-   - role: psad
-     tags:
-     - psad 
-
    - role: sharedmem
+     become: yes 
      tags:
      - sharedmem  
 
    - role: reboot
+     become: yes
      tags:
      - reboot
 
    - role: tty
+     become: yes 
      tags:
      - tty 
 
    - role: irqbalance
+     become: yes 
      tags:
      - irqbalance 
 
    - role: set-limits
+     become: yes 
      tags:
      - set-limits 
 
    - role: swap
+     become: yes
      tags:
      - swap  
 
    - role: secure-cron
+     become: yes 
      tags:
      - secure-cron
 
    - role: clamav
+     become: yes 
      tags:
      - clamav 
 
-   - role: tiger
+   - role: rootkit
+     become: yes 
      tags:
-     - tiger
+     - rootkit
 
    - role: auditd
+     become: yes
      tags:
      - auditd
 
    - role: scripts
+     become: yes 
      tags:
      - scripts  
 
    - role: ssh-upload
+     become: yes 
      tags:
      - ssh-upload 
 
@@ -117,23 +147,62 @@
      tags:
      - ownership
 
+   - role: remove-pckgs
+     become: yes
+     tags:
+     - remove-pckgs
+
    - role: common
+     become: yes 
      tags:
      - common
 
+   - role: rclone
+     become: yes 
+     tags:
+     - rclone
+
    - role: anonymity
+     become: yes
      tags:
      - anonymity
 
    - role: firewall
+     become: yes 
      tags:
      - firewall 
 
    - role: sysctl
+     become: yes
      tags:
      - sysctl 
 
- 
+   - role: fail2ban
+     become: yes 
+     tags:
+     - fail2ban 
+
+   - role: ssh-config
+     become: yes 
+     tags:
+     - ssh-config
+
+   - role: ssh-port
+     become: yes 
+     tags:
+     - ssh-port
+
+   - role: lynis
+     become: yes
+     tags:
+     - lynis
+
+   - role: download
+     become: yes
+     tags:
+     - download
+
+
    
    
 

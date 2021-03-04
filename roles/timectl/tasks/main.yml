@@ -1,9 +1,0 @@
----
-- name: set timezone with timectl command
-  become: yes 
-  shell: timedatectl set-timezone 'America/Los_Angeles'
-
- 
-
-
-

@@ -24,8 +24,21 @@ useful commands....
 Ansisble gather facts
 
 ```
-ansible -m setup all -i ../../../Ansible-Inventory/localhosts 
+ansible -m setup all -i hosts.ini -u #somee user
 ```
+
+Ansible gather facts output to file
+
+```
+ansible -m setup all -i hosts.ini --tree out/ -u root
+```
+
+Ansible cmdb
+
+```
+ansible-cmdb -t html_fancy_split -p local_js=1 out/
+```
+
 Ansible Ping
 
 ```

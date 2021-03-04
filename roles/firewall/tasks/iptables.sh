@@ -60,5 +60,6 @@ fi
 /sbin/iptables -A port-scanning -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN 
 /sbin/iptables -A port-scanning -j DROP
 
-### apply changes
+### save changes
 iptables-save > /etc/iptables/rules.v4
+ip6tables-save > /etc/iptables/rules.v6

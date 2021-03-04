@@ -8,5 +8,26 @@
 - name: configure psad with psad-config.sh 
   become: yes
   script: psad-config.sh 
+
+- name: restart psad with systemctl
+  become: yes 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: psad
+
+- name: enable psad as a service
+  become: yes 
+  systemd:
+    name: psad
+    enabled: yes 
+
+- name: run psad for first time and write to file
+  become: yes 
+  shell: cd /home/{{ user_name | quote }}/system* && psad -S > psad-first-run.txt
+ 
+  
+
+
   
    

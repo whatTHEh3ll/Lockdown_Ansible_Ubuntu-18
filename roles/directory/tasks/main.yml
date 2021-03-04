@@ -1,0 +1,26 @@
+---
+
+- name: register date and time
+  shell: date +"%m_%d_%Y_%r"
+  register: time
+  
+- debug:
+    msg: time.stdout
+
+- name: set fact for system-{{ ansible_hostname }}-{{ inventory_hostname }}-{{ time.stdout }}
+  set_fact:
+    directory: system-{{ ansible_distribution_release }}-{{ ansible_hostname }}-{{ inventory_hostname }}-{{ time.stdout }}
+    cacheable: yes
+  
+- name: create {{ directory }} folder using custom fact
+  file:
+    path: "/home/{{ user_name }}/{{ directory }}"
+    state: directory
+  
+
+
+  
+
+
+   
+

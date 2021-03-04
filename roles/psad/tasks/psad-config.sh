@@ -2,8 +2,9 @@
 
 # configure psad
 sudo iptables -A INPUT -j LOG
-
 sudo iptables -A FORWARD -j LOG
+sudo ip6tables -A INPUT -j LOG
+sudo ip6tables -A FORWARD -j LOG
 
 cp /etc/psad/psad.conf .
 
@@ -21,9 +22,3 @@ sudo chown root /etc/psad/psad.conf
 sudo chown root:root /etc/psad/psad.conf  
 
 sudo psad --sig-update
-
-sudo systemctl restart psad
-
-#sudo systemctl enable psad  
-
-sudo psad -S

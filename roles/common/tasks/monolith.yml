@@ -2,10 +2,10 @@
 - block :
     
   - name: 'snap : install monolith with snap'
-    become: yes 
     snap:
       name: monolith
       state: present
+    
 
   tags:
     - common

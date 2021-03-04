@@ -2,7 +2,6 @@
 - block:
 
   - name: 'rust : checkout rustup repository'
-    become: yes 
     git:
       repo: https://github.com/rust-lang/rustup.git
       dest: /home/{{ user_name }}/rustup
@@ -20,12 +19,11 @@
     shell: /bin/bash -ic 'source $HOME/.cargo/env'
  
   - name: 'rust : source profile for rust'
-    become: yes
+    become: yes 
     become_user: "{{ user_name }}"
     shell: /bin/bash -ic 'source ~/.profile'
   
   - name: 'rust : install build-essential for rust'
-    become: yes
     apt:
      update_cache: yes
      name: build-essential

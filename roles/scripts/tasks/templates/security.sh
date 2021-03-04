@@ -11,10 +11,6 @@ echo "CHECK UNATTENDED UPGRADES" > "$_file"
 echo . >> "$_file"
 sudo unattended-upgrades --dry-run --debug >> "$_file"
 echo . >> "$_file"
-echo "#### PSAD SCAN ####" >> "$_file"
-echo . >> "$_file"
-psad -S >> "$_file"
-echo . >> "$_file"
 echo "#### CHECK IF UNWANTED USERS ARE LOGGED IN ####" >> "$_file"
 echo . >> "$_file"
 cat /etc/passwd | egrep -v '\/false|\/nologin|\/shutdown|\/halt' | cut -d':' -f 1,7 >> "$_file"
@@ -26,8 +22,7 @@ echo . >> "$_file"
 echo "### RUN AUDITD ###" >> "$_file"
 aureport >> "$_file"
 echo . >> "$_file"
-echo "### RUN TIGER ###" >> "$_file"
-tiger >> "$_file"
+
 
 
 

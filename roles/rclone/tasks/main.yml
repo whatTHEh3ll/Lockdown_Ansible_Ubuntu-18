@@ -1,13 +1,11 @@
 ---
 
 - name: download rclone install script
-  become: yes
   get_url:
     url: https://rclone.org/install.sh
     dest: /home/{{ user_name }}
 
 - name: execute rclone script
-  become: yes 
   shell: bash install.sh
   args:
     chdir: /home/{{ user_name }}
@@ -16,16 +14,15 @@
 - debug:
     msg: "{{ rcloneinstall.stdout }}"
 
-- name: copy rclone.conf file to /home/{{  user_name }}/.config/rclone/rclone.conf
-  become: yes # requires root
+- name: copy rclone.conf file to /home/{{ user_name }}/.config/rclone/rclone.conf
   copy:
-    src: ../../../../../../Ansible-Config/rclone.conf
+    src: rclone.conf
     dest: /home/{{ user_name }}/.config/rclone/
     force: yes 
     decrypt: yes
+  no_log: True
 
 - name: 'rclone : cleanup fragments'
-  become: yes
   file:
     dest: /home/{{ user_name }}/install.sh
     state: absent

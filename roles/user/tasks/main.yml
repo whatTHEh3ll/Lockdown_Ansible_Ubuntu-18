@@ -1,12 +1,88 @@
 ---
+
+- name: register date and time
+  become: false
+  shell: date +"%m_%d_%Y_%r"
+  register: passwd_time
+  delegate_to: localhost
+
+- debug:
+    msg: passwd_time.stdout
+
+- name: Include pass_vars file
+  become: false
+  include_vars: 
+    file: password_vars.yml
+  delegate_to: localhost
+
+- name: set facts for random password
+  become: false
+  set_fact:
+    remaining_password_length: "{{ password_length -  password_specs | length }}"
+    password_spec_str: "{{ password_specs | join(',') }}"  
+  delegate_to: localhost
+    
+- name: Generate password with required constraints
+  become: false
+  set_fact:
+    pwd_pool: "{{ pwd_pool | default([]) + [lookup('password', '/dev/null length=1 chars=' ~item)]}}"
+  loop: "{{ password_specs }}"
+  delegate_to: localhost
+  
+- name: Create required length of password
+  become: false
+  debug:
+    msg: "{{ pwd_pool | join('') + lookup('password', '/dev/null length=' ~ remaining_password_length ~ ' chars=' ~ password_spec_str )}}"
+  delegate_to: localhost
+
+- name: create pass_vault.yml file
+  become: false
+  copy:
+    content: "Vault password:"
+    dest: "{{ playbook_dir }}/pass_vault.yml"
+    force: yes
+  delegate_to: localhost
+
+- name: write password to file   
+  become: false                                                                           
+  blockinfile:
+    dest: "{{ playbook_dir }}/pass_vault.yml"
+    marker: ""
+    block: |                                                                                             
+      #{{ passwd_time.stdout }}
+    insertafter: "Vault password:"
+    state: present 
+  delegate_to: localhost
+  
+- name: write password to file  
+  become: false                                                                            
+  blockinfile:
+    dest: "{{ playbook_dir }}/pass_vault.yml"
+    marker: ""
+    block: |                                                                                             
+      my_password: {{ pwd_pool | join('') + lookup('password', '/dev/null length=' ~ remaining_password_length ~ ' chars=' ~ password_spec_str )}}
+    insertafter: "#{{ passwd_time.stdout }}"
+    state: present 
+  delegate_to: localhost
+
+- name: Remove blank lines blockinfile put in
+  become: false
+  lineinfile :
+    path: "{{ playbook_dir }}/pass_vault.yml"
+    state: absent
+    regexp: '^$'
+  delegate_to: localhost
+
+- name: Include pass_vault variable
+  include_vars: 
+    file: "{{ playbook_dir }}/pass_vault.yml"
+      
 - name: Ensure wheel group is present
-  become: yes
   group:
     name: wheel
     state: present
   
 - name: Ensure wheel group has sudo privileges
-  become: yes
   lineinfile:
     dest: /etc/sudoers
     state: present
@@ -15,17 +91,11 @@
     validate: "/usr/sbin/visudo -cf %s"
   
 - name: Install the `sudo` package
-  become: yes
   package:
     name: sudo
     state: latest
 
-- name: Include pass_vault variable
-  include_vars: 
-    file: pass_vault.yml
-
 - name: Create the non-root user account
-  become: yes
   user:
     name: "{{ user_name }}"
     password: "{{ my_password | password_hash('sha512') }}"

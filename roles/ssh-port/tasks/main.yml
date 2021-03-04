@@ -1,20 +1,19 @@
 ---
 
 - name: assign new port to ssh
-  become: yes
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: '^#Port'
     line: 'Port {{ ssh_port }}'
 
 - name: Restart sshd
-  become: yes 
   systemd:
     state: restarted
     daemon_reload: yes
     name: sshd
 
-- name: Ansible replace string example
+- name: Ansible replace string in Ansible Hosts.ini
+  become: false  
   lineinfile:
     path: hosts.ini
     regex: "{{ inventory_hostname }}"
@@ -24,6 +23,23 @@
 
 - meta: refresh_inventory
 
-- name: Pause for 5 minutes wait for inventory to refresh
+- name: Pause for 2 minutes wait for inventory to refresh
   pause:
-    minutes: 5
+    minutes: 2
+
+- name: Wait ssh port changes and reconnect 
+  become: false
+  wait_for:
+    port: "{{ ssh_port }}"
+    host: "{{ inventory_hostname }}"
+    search_regex: OpenSSH
+    delay: 10
+    timeout: 60
+  delegate_to: localhost
+
+- name: Check ssh connection for new inventory
+  shell: "uptime"
+  register: Uptime
+
+- debug: 
+    var: Uptime

@@ -4,7 +4,7 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-18.04"
-  config.vm.hostname = "Lockdown-ubuntu-18"
+  config.vm.hostname = "lockdown-ubuntu-18"
   # use for dhcp
   # config.vm.network "private_network", type: "dhcp"
   config.vm.network "public_network", ip: "192.168.1.80", bridge: "wlo1"
@@ -26,14 +26,16 @@ Vagrant.configure("2") do |config|
 Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "provision.yml"
+     ansible.become = "True"
+     ansible.verbose = "v"
      ansible.limit = "all"
-     ansible.inventory_path = "hosts.ini"
-     ansible.config_file = "ansible.cfg"
+     ansible.inventory_path = ""
+     ansible.config_file = ""
      ansible.vault_password_file = ""
      ansible.start_at_task = ""
-     #ansible.skip_tags = ""
+     ansible.skip_tags = ""
      ansible.tags = ""
-     #ansible.force_remote_user = true
+     ansible.force_remote_user = true
   end
 end
    

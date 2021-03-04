@@ -1,86 +1,42 @@
 ---
 - block:
 
-  - name: 'openvpn : Install openvpn'
-    become: yes
+  - name: 'vpn : Install wireguard'
     apt:
       update_cache: yes
-      name: openvpn
+      name: wireguard
 
-  - name: 'openvpn : clone dnsleaktest repository'
-    become: yes
-    become_user: "{{ user_name }}"
-    git:
-      repo:  https://github.com/macvk/dnsleaktest.git
-      dest: /home/{{ user_name }}/dnsleaktest
-
-  - name: 'openvpn : make dnsleak script executable' 
-    become: yes
-    become_user: "{{ user_name }}"
-    file:
-      path: /home/{{ user_name }}/dnsleaktest
+  - name: 'vpn : copy dnsleaktest.sh into /usr/local/bin/'
+    template:
+      src: templates/dnsleaktest.j2
+      dest: /usr/local/bin/dnsleaktest
       owner: "{{ user_name }}"
       group: "{{ user_name }}"
       mode: '0755'
- 
-  - name: 'openvpn : Install speedtest-cli with pip3'
+
+  - name: format RAW lynis output and remove /home/{{ user_name }}/lynis-master
+    shell: "{{ item }}"
+    args:
+      chdir: /home/{{ user_name }}/{{ directory }}
+      warn: no
+    with_items:
+      - dnsleaktest > RAW-dnsleaktest.txt
+      - cat RAW-dnsleaktest.txt | ansi2txt > 'DNSLEAKTEST-{{ directory }}.txt'
+      - srm -vz RAW-dnsleaktest.txt
+   
+  - name: 'vpn : Install speedtest-cli with pip3'
     become: yes
     become_user: "{{ user_name }}"
     pip:
       name: speedtest-cli
       executable: pip3
 
-  - name: 'openvpn : Create /home/{{ user_name }}/vpn-config directory if it does not exist'
-    become: yes 
-    file:
-      path: /home/{{ user_name }}/vpn-config
-      state: directory
-      mode: '0644'
-
-  - name: 'openvpn : copy vpnsecure and ra4wvpn to /home/{{ user_name }}/vpn-config'
+  - name: run speedtest-cli and write to file
     become: yes
-    copy:
-      src: ../../../../../../Ansible-Config/vpn-config/
-      dest: /home/{{ user_name }}/vpn-config
-      decrypt: yes
-      mode: '0644'
-
-  - name: 'openvpn : copy pass.txt to /etc/openvpn for ra4wvpn'
-    become: yes
-    copy:
-      src: ../../../../../../Ansible-Config/vpn-config/pass.txt
-      dest: /etc/openvpn
-      decrypt: yes
-      mode: u=rw,g=r,o=r
-
-  - name: 'openvpn : copy auth.txt to /etc/openvpn for vpnsecure configuration'
-    become: yes
-    copy:
-      src: ../../../../../../Ansible-Config/vpn-config/pass.txt
-      dest: /etc/openvpn
-      decrypt: yes
-      mode: u=rw,g=r,o=r
-
-  - name: 'openvpn : stop openvpn service'
-    become: yes
-    systemd:
-      state: stopped
-      name: openvpn
-  
-  - name: 'openvpn : copy vpnrestart.sh script to /etc/openvpn'
-    become: yes
-    copy:
-      src: vpnrestart.sh
-      dest: /etc/openvpn
-      mode: '0755'
-  
-  - name: 'openvpn : create cronjob for vpnrestart script'
-    become: yes 
-    cron:
-      name: vpnrestart 
-      minute: "5"
-      user: root
-      job: /etc/openvpn/checkopenvpn.sh >> /var/log/checkopenvpn.log 2>&1
+    become_user: "{{ user_name }}"
+    shell: speedtest-cli > 'SPEEDTEST-{{ DIRECTORY }}'
+    args:
+      chdir: /home/{{ user_name }}/{{ directory }}
 
   tags:
     - anonymity

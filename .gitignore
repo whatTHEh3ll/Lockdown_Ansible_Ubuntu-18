@@ -12,6 +12,12 @@
 *.box
 
 ## hosts.ini
-*.ini 
+*.ini  
+
+## password_vault.yml
+pass_vault.yml
+
+## commands.txt
+#commands.txt
 
 # End of https://www.gitignore.io/api/vagrant

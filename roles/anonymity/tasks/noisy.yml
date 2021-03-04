@@ -2,11 +2,16 @@
 - block:
 
   - name: 'anonymity : download noisy repository'
-    become: yes
-    become_user: "{{ user_name }}"
     git:
       repo: https://github.com/1tayH/noisy.git
-      dest: /home/{{ user_name }}/noisy
+      dest: /opt/noisy
+
+  - name: 'anonymity : change file permissions of pythonTools in /opt/noisy directory'
+    file: 
+      path: /opt/noisy
+      recurse: yes
+      owner: "{{ user_name }}"
+      group: "{{ user_name }}"
 
   - name: 'anonymity : Install requests library'
     become: yes
@@ -20,8 +25,16 @@
     become_user: "{{ user_name }}"
     copy:
       src: config.json
-      dest: /home/{{ user_name }}/noisy
+      dest: /opt/noisy
       force: yes 
+
+  - name: 'anonymity : copy startup script for noisy'
+    template:
+      src: templates/noisy.j2
+      dest: /usr/local/bin/noisy
+      owner: "{{ user_name }}"
+      group: "{{ user_name }}"
+      mode: '0755'
   
   tags:
     - anonymity

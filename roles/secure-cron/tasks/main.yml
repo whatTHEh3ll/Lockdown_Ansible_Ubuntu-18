@@ -1,11 +1,9 @@
 ---
     
 - name: allow root for cron, disable anacron and remove at 
-  become: yes
   script: secure-cron.sh
 
 - name: Set User/Group Owner and Permission on cron
-  become: yes
   shell: "{{ item }}"
   args:
     chdir: /home/{{ user_name }}

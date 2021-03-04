@@ -1,0 +1,12 @@
+---
+- name: set timezone with timectl command
+  shell: "{{ item }}"
+  with_items:
+    - timedatectl set-timezone 'America/Los_Angeles'
+    - timedatectl set-timezone UTC
+    - timedatectl > '/home/{{ user_name }}/{{ directory }}/timedatectl.txt'
+
+ 
+
+
+

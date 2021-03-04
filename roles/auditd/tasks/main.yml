@@ -1,7 +1,6 @@
 ---
 
 - name: Install auditd and audispd-plugins
-  become: yes 
   apt:
     name: 
       - auditd
@@ -9,7 +8,6 @@
     state: present
 
 - name: copy audit.rules to /etc/audit/
-  become: yes
   copy:
     src: templates/audit.rules.j2
     dest: /etc/audit/rules.d/audit.rules
@@ -19,20 +17,17 @@
     mode: 0644
   
 - name: "restart auditd"
-  become: yes
   systemd:
     name: auditd
     state: restarted
  
 - name: enable service auditd and ensure it is not masked
-  become: yes
   systemd:
     name: auditd
     enabled: yes
     masked: no
 
 - name: 'reboot machine for auditd to see if rules where applied'
-  become: yes
   reboot:
     reboot_timeout: 300
       
@@ -42,50 +37,22 @@
 
 - debug: msg={{UPTIME_POST_REBOOT.stdout}}
 
-- name: list auditd rules and write to file 
-  become: yes
-  shell: auditctl -l > auditd-rules-{{ ansible_date_time.date }}.txt 
-  register: auditctl
-  args: 
-    chdir: /home/{{ user_name }}/
-
-- name: run aditd for for first time
-  become: yes
-  shell: aureport > auditd-first-run-{{ ansible_date_time.date }}.txt 
-  args: 
-    chdir: /home/{{ user_name }}/
-
-- name: change file permisions for auditd output
-  become: yes 
-  file:
-    path: "{{ item }}"
-    owner: "{{ user_name }}"
-    group: "{{ user_name }}"
-  with_items:
-    - /home/{{ user_name }}/auditd-first-run-{{ ansible_date_time.date }}.txt 
-    - /home/{{ user_name }}/auditd-rules-{{ ansible_date_time.date }}.txt 
-
-- name: copy auditd first run to playbook directory
-  become: yes
-  become_user: "{{ user_name }}"
-  fetch:
-    src:  "/home/{{ user_name }}/auditd-first-run-{{ ansible_date_time.date }}.txt"
-    dest: "{{ playbook_dir }}"
-
-- name: copy auditd rules to playbook directory
-  become: yes
-  become_user: "{{ user_name }}"
-  fetch:
-    src: "/home/{{ user_name }}/auditd-rules-{{ ansible_date_time.date }}.txt"
-    dest: "{{ playbook_dir }}"
-
-- name: delete auditd-first-run-{{ ansible_date_time.date }}.txt and auditd-rules-{{ ansible_date_time.date }}.txt
-  become: yes
-  become_user: "{{ user_name }}"
+- name: list auditd rules and write to file and run aditd for for first time
   shell: "{{ item }}"
   args:
-    chdir: /home/{{ user_name }}
+    chdir: /home/{{ user_name }}/{{ directory }}
   with_items:
-    - srm -vz auditd-first-run-{{ ansible_date_time.date }}.txt
-    - srm -vz auditd-rules-{{ ansible_date_time.date }}.txt 
-    
+    - auditctl -l > 'auditd-rules-{{ directory }}.txt' 
+    - aureport > 'auditd-first-run-{{ directory }}.txt' 
+
+
+
+
+
+
+
+
+ 
+ 
+
+

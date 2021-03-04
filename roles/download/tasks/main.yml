@@ -1,0 +1,38 @@
+---
+
+- name: archive {{ directory }} to system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip
+  archive:
+    path: /home/{{ user_name }}/{{ directory }}
+    dest: /home/{{ user_name }}/system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip
+    format: zip
+    remote_src: yes
+    remove: yes
+
+- name: download system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip from remote node to playbook directory
+  fetch:
+    src: /home/{{ user_name }}/system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip
+    dest: "{{ playbook_dir }}/"
+    flat: yes
+
+- name: unzip system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip on local system
+  become: false
+  unarchive:
+    src: "{{ playbook_dir }}/system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip"
+    dest: "{{ playbook_dir }}/"
+  delegate_to: localhost
+
+- name: remove system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip from local playbook directory
+  become: false
+  file:
+    dest: "{{ playbook_dir }}/system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip"
+    state: absent
+  delegate_to: localhost
+  
+- name: remove {{ directory }} form remote node
+  shell: "{{ item }}"
+  args:
+    chdir: /home/{{ user_name }}
+  with_items:
+    - srm -rvz '{{ directory }}'
+    - srm -vz system-{{ ansible_hostname }}-{{ inventory_hostname }}.zip
+

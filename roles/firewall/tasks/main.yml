@@ -1,27 +1,29 @@
 ---
 
 - name: Install the ufw package
-  become: yes
   package:
     name: ufw
     state: latest
   
 - name: Install the iptables-persistent package 
-  become: yes
   package:
     name: iptables-persistent
     state: latest
   
 - name: setup ufw rules script
-  become: yes
   script: iptables.sh
+
+- name: Enable netfilter-persistent.service for iptables
+  systemd:
+    name: netfilter-persistent.service
+    state: started
+    enabled: yes
   
 - name: setup ufw rules script
   become: yes
   script: firewall.sh
   
 - name: add lines to /etc/before.rules
-  become: yes
   blockinfile:
     path: /etc/ufw/before.rules 
     state: present
@@ -36,8 +38,25 @@
     insertbefore: "COMMIT"
   
 - name: reload ufw with shell module
-  become: yes
   shell: ufw reload
+
+- name: get ufw status by numbers
+  shell: ufw status numbered > 'UFW-status-{{ directory }}.txt'
+  args:
+    chdir: /home/{{ user_name }}/{{ directory }}
+  register: ufw
+
+- debug:
+    msg: ufw.stdout
+
+- name: backup iptable rules to {{ directory }}
+  shell: "{{ item }}"
+  args:
+    chdir: /home/{{ user_name }}/{{ directory }}
+  with_items:
+    - iptables-save > rules.v4.txt
+    - iptables-save > rules.v6.txt
+    - systemctl status netfilter-persistent.service > iptables-status.txt
     
 
 

@@ -1,6 +1,5 @@
 ---
 - name: Add local public key for key-based SSH authentication
-  become: yes
   authorized_key:
     user: "{{ user_name }}"
     state: present
@@ -8,7 +7,6 @@
   tags: ssh 
 
 - name: Harden sshd configuration
-  become: yes
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
@@ -59,7 +57,6 @@
       line: "PermitEmptyPasswords no"
 
 - name: add lines to ssh configuration
-  become: yes
   blockinfile:
     dest: /etc/ssh/sshd_config
     state: present
@@ -71,7 +68,6 @@
       Protocol 2
  
 - name: Harden pamd./sshd   
-  become: yes
   lineinfile:
     dest: /etc/pam.d/sshd
     regexp: "{{ item.regexp }}"

@@ -1,0 +1,56 @@
+---
+
+  - name: download lynis archive from https://github.com/CISOfy/lynis/archive/master
+    become: yes
+    become_user: "{{ user_name }}"
+    get_url:
+      url: https://github.com/CISOfy/lynis/archive/master.zip
+      dest: /home/{{ user_name }}/
+      
+  - name: unzip lynis archive 
+    become: yes
+    become_user: "{{ user_name }}"
+    unarchive:
+      src: https://github.com/CISOfy/lynis/archive/master.zip
+      dest: /home/{{ user_name }}
+      remote_src: yes
+
+  - name: Change permisions for lynis directory to root 
+    file:
+      path: /home/{{ user_name }}/lynis-master
+      state: directory
+      recurse: yes
+      owner: root
+      group: root
+  
+  - name: run lynis and write RAW output to "{{ directory }}"
+    shell: ./lynis audit system > '/home/{{ user_name }}/{{ directory }}/RAW-lynis-output.txt'
+    args:
+      chdir: /home/{{ user_name }}/lynis-master
+    register: lynis
+
+  - debug:
+      msg: "{{ lynis.stdout }}"
+    
+  - name: format RAW lynis output and remove /home/{{ user_name }}/lynis-master
+    shell: "{{ item }}"
+    args:
+      chdir: /home/{{ user_name }}/{{ directory }}
+      warn: no 
+    with_items:
+      - cat RAW-lynis-output.txt | ansi2txt > '{{ directory }}-LYNIS.txt'
+      - srm -vz RAW-lynis-output.txt
+      - rm -rf /home/{{ user_name }}/lynis-master
+   
+  - name: clean up lynis 
+    become: yes
+    become_user: "{{ user_name }}"
+    file:
+      dest: /home/{{ user_name }}/lynis-master.zip
+      state: absent
+    
+      
+      
+  
+
+

@@ -5,7 +5,6 @@
     file: sysctl_config.yml
   
 - name: Change various sysctl-settings
-  become: yes 
   sysctl:
     name: '{{ item.key }}'
     value: '{{ item.value }}'
@@ -14,6 +13,13 @@
     reload: yes
     ignoreerrors: yes
   with_dict: '{{ sysctl_config }}'
+
+- name: copy /etc/sysctl.conf to "{{ directory }}"
+  copy:
+    src: /etc/sysctl.conf
+    dest: "/home/{{ user_name }}/{{ directory }}"
+    remote_src: yes 
+
   
  
  

@@ -2,7 +2,6 @@
 - block:
 
   - name: 'snap: add snap path to etc/enviroment'
-    become: yes 
     lineinfile:
       path: /etc/environment
       state: present

@@ -1,0 +1,19 @@
+go version
+
+ruby -v
+
+node -v 
+
+npm -V
+
+yarn --version
+
+rustc -V 
+resutc --version
+
+docker --version  
+
+docker run hello-world
+
+
+

@@ -1,10 +1,8 @@
 ---
 - name: execute sharedmem bash script with superuser only
-  become: yes
   script: sharedmem.sh 
 
 - name: copy clearcache script to /usr/local/bin
-  become: yes 
   copy:
     src: templates/clearcache.j2
     dest: /usr/local/bin/clearcache

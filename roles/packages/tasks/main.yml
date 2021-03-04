@@ -1,17 +1,9 @@
 ---
-
-- name: Update apt-get repo and cache
-  become: yes
-  apt:
-    update_cache: yes
- 
 - name: Update all packages to the latest version
-  become: yes 
   apt:
     upgrade: dist 
  
 - name: install additional packages
-  become: true
   apt:
     name: 
       - vim
@@ -40,6 +32,7 @@
       - ca-certificates 
       - pwgen
       - secure-delete
+      - colorized-logs 
     state: present
     update_cache: true
   

@@ -2,7 +2,6 @@
 - block:
 
   - name: 'covermyass : download covermyass'
-    become: yes 
     git:
       repo: https://github.com/sundowndev/go-covermyass
       dest: /home/{{ user_name }}/go-covermyass
@@ -15,13 +14,11 @@
       chdir: /home/{{ user_name }}/go-covermyass
 
   - name: 'covermyass : build covermyass'
-    become: yes
     shell: /usr/local/go/bin/go build -v .
     args:
       chdir: /home/{{ user_name }}/go-covermyass
 
   - name: 'covermyass : make go-covermyass executable'
-    become: yes 
     copy:
       src: /home/{{ user_name }}/go-covermyass/go-covermyass
       dest: /usr/local/bin/
